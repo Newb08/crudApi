@@ -1,37 +1,77 @@
 import dotenv from 'dotenv'
 import express from 'express'
+import fs, { read, readFileSync } from 'fs'
+import {authorize} from './Middleware/authorize.js'
 
 dotenv.config();
 const app = express()
-
 const PORT=process.env.PORT || 3000
-const authKey=process.env.KEY
+const filePath = './data.json';
 
 const myLogger = function (req, res, next) {
     console.log('LOGGED')
     next()
 }
 
-const authorize=(req,res,next)=>{
-    // console.log(req.headers)
-    const userKey=req.headers['secretkey'];
-    
-    if(!userKey){
-        return res.status(401).send('Authorization Failed, No key found')
-    }
-
-    if(userKey !== authKey){
-        return res.status(403).send('Authorization Failed, Invalid key')
-    }
-    
-    next()
+const readData=(path)=>{
+    const data = fs.readFileSync(path, 'utf8');
+    return JSON.parse(data);
 }
- 
-// app.use(authorize)
+const writeData=(data)=>{
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+}
+
 app.use(myLogger)
+app.use(express.json())
 
 app.get('/abcd', authorize, (req,res)=>{
     res.send("Hello")
+})
+
+app.get('/users', authorize, (req,res)=>{
+    const users=readData(filePath)
+    res.send(users)
+})
+
+app.post('/add-user', authorize, (req,res)=>{
+    const users=readData(filePath)
+    const newUser=req.body
+
+    users.push(newUser)
+    writeData(users)
+    
+    res.send('New user added')
+})
+
+app.patch('/user/:id', authorize, (req,res)=>{
+    const users=readData(filePath)
+    const userId=parseInt(req.params.id)
+    const updates=req.body
+
+    const user=users.find((user) => user.id === userId);
+    if(!user){
+        return res.send(`No user with id:${userId} exist`)
+    }
+
+    Object.assign(user,updates)
+    writeData(users)
+
+    res.send('User data updated')
+})
+
+app.delete('/user/:id', authorize, (req,res)=>{
+    const users=readData(filePath)
+    const userId=parseInt(req.params.id)
+
+    const user=users.find((user) => user.id === userId);
+    if(!user){
+        return res.send(`No user with id:${userId} exist`)
+    }
+
+    users.splice(userId-1,1)
+    writeData(users)
+
+    res.send(`User data deleted\n${users}`)
 })
 
 app.get('/', (req,res)=>{
