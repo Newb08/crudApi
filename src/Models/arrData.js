@@ -16,7 +16,28 @@ let users=[
       }
 ]
 
-const getUsers = ()=> users
-const addUser = (user) => users.push(user)
-const delUser = (ind) => users.splice(ind,1)
+const getUsers = ()=> {
+  try {
+    return users
+  }catch(error){
+    console.log(`Error from arrData.js file:`,error)
+    return error.name
+  }
+}
+const addUser = (user) =>{
+  try {
+    return users.push(user)
+  } catch (error) {
+    console.log(`Error from arrData.js file:`,error)
+    return error.name
+  } 
+}
+const delUser = (ind) =>{
+  try {
+    return users.splice(ind,1)
+  } catch (error) {
+    console.log(`Error from arrData.js file:`,error)
+    return error.name
+  }
+} 
 export {getUsers, addUser, delUser}
