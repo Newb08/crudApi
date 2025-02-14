@@ -5,9 +5,9 @@ const createUser=async (req,res)=>{
     try {
         const db= await dbPromise
         const {name, age} = req.body
-        const user= await db.run('insert into users(name, age) values (?, ?)', [name, age])
+        await db.run('insert into users(name, age) values (?, ?)', [name, age])
 
-        res.send(`New user added`)
+        res.status(201).send(`New user added`)
     } 
     catch (error) {
         res.status(500).send(`User can't be added`)
@@ -33,13 +33,13 @@ const updateUser=async (req,res)=>{
         const db= await dbPromise
         const userId=parseInt(req.params.id)
         const {name, age} = req.body
-        const user= await db.run('update users set name=?, age=? where id=?', [name, age, userId])
+        const result= await db.run('update users set name=?, age=? where id=?', [name, age, userId])
 
-        if(user.changes === 0){
+        if(result.changes === 0){
             return res.status(404).send(`User not found`)
         }
 
-        res.send(`User details updated`)
+        res.status(200).send(`User details updated`)
     } 
     catch (error) {
         res.status(500).send(`User can't be updated`)
@@ -51,13 +51,13 @@ const deleteUser=async (req,res)=>{
     try {
         const db= await dbPromise
         const userId=parseInt(req.params.id)
-        const user= await db.run('delete from users where id=?', [userId])
+        const result=await db.run('delete from users where id=?', [userId])
 
-        if(user.changes === 0){
+        if(result.changes === 0){
             return res.status(404).send(`User not found`)
         }
 
-        res.send(`User deleted`)
+        res.status(200).send(`User deleted`)
     } 
     catch (error) {
         res.status(500).send(`User can't be deleted`)

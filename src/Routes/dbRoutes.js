@@ -3,7 +3,7 @@ import { createUser, readUser, updateUser, deleteUser } from '../Controller/dbOp
 
 const router=express.Router()
 
-router.post('/add-user', createUser)
+router.post('/users', createUser)
 router.get('/users', readUser)
 router.patch('/user/:id', updateUser)
 router.delete('/user/:id', deleteUser)

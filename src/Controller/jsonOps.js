@@ -18,7 +18,7 @@ const createUser=(req,res)=>{
         users.push(newUser)
         writeData(users)
         
-        res.send('New user added')        
+        res.status(201).send('New user added')        
     } 
     catch (error) {
         res.status(500).send(`User can't be added`)
@@ -52,7 +52,7 @@ const updateUser=(req,res)=>{
         Object.assign(user,updates)
         writeData(users)
 
-        res.send('User data updated')
+        res.status(200).send('User data updated')
         
     } 
     catch (error) {
@@ -75,7 +75,7 @@ const deleteUser=(req,res)=>{
         users.splice(userId-1,1)
         writeData(users)
 
-        res.send(`User data deleted`)
+        res.status(200).send(`User data deleted`)
     } catch (error) {
         res.status(500).send(`User can't be deleted`)
         console.log(`Error from jsonOps.js file `,error)

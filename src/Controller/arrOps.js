@@ -6,7 +6,7 @@ const createUser=(req,res)=>{
         const users=getUsers()
         const newUser=req.body
         addUser(newUser)
-        res.send('New user created!')
+        res.status(201).send('New user created!')
     } catch (error) {
         res.status(500).send(`User can't be added`)
         console.log(`Error from arrOps.js file `,error)
@@ -36,7 +36,7 @@ const updateUser=(req,res)=>{
 
         Object.assign(user, updates)
 
-        res.send('User updated!')
+        res.status(200).send('User updated!')
     } catch (error) {
         res.status(500).send(`User can't be updated`)
         console.log(`Error from arrOps.js file `,error)
@@ -54,8 +54,7 @@ const deleteUser=(req,res)=>{
         }
 
         delUser(userIndex)
-
-        res.send('User deleted!')
+        res.status(200).send('User deleted!')
     } catch (error) {
         res.status(500).send(`User can't be deleted`)
         console.log(`Error from arrOps.js file `,error)
