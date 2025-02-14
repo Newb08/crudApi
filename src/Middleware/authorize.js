@@ -1,25 +1,25 @@
 // import express from 'express'
-import dotenv from 'dotenv'
+import dotenv from "dotenv";
 
 dotenv.config();
-const authKey=process.env.KEY
+const authKey = process.env.KEY;
 
-export const authorize=(req,res,next)=>{
-    // console.log(req.headers)
-    try{
-        const userKey=req.headers['secretkey'];
-        
-        if(!userKey){
-            return res.status(401).send('Authorization Failed, No key found')
-        }
+export const authorize = (req, res, next) => {
+  // console.log(req.headers)
+  try {
+    const userKey = req.headers["secretkey"];
 
-        if(userKey !== authKey){
-            return res.status(403).send('Authorization Failed, Invalid key')
-        }
-        
-        next()
-    }catch (error){
-        console.log(`Error in authorization middleware `,error)
-        next(err)
+    if (!userKey) {
+      return res.status(401).send("Authorization Failed, No key found");
     }
-}
+
+    if (userKey !== authKey) {
+      return res.status(403).send("Authorization Failed, Invalid key");
+    }
+
+    next();
+  } catch (error) {
+    console.log(`Error in authorization middleware `, error);
+    next(err);
+  }
+};
